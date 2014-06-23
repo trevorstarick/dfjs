@@ -26,7 +26,7 @@ function initMap() {
             var data = {
                 coordinates: [x, y],
                 data: 0
-            }
+            };
             row.push(data);
         }
         Game.map.push(row);
@@ -36,12 +36,12 @@ function initMap() {
 Game.init = function() {
     initMap();
     choosePoint();
-}
+};
 
 Game.update = function() {
     stats.update();
     choosePoint();
-}
+};
 
 Game.draw = function() {
     var table = document.createElement('table'),
@@ -65,28 +65,28 @@ Game.draw = function() {
     } else {
         document.body.appendChild(table);
     }
-}
+};
 
 Game.run = function() {
     if (Game.map.length) {
         Game.update();
         Game.draw();
     } else {
-        console.log('Game initialized...')
+        console.log('Game initialized...');
         Game.init();
     }
-}
+};
 
 Game.pause = function() {
     clearInterval(Game._interval);
-}
+};
 
 Game.start = function() {
     Game._interval = setInterval(Game.run, 1000 / Game.tick);
-}
+};
 
 Game.reset = function() {
     Game.map = [];
-}
+};
 
 Game.start();
