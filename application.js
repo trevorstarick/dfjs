@@ -4,8 +4,9 @@ var $ = window.jQuery || {};
 var Game = {
     map: [],
     entityMap: {},
+    stopped: 1,
+    version: 1,
     settings: {
-        version: 1,
         size: 8,
         tick: 100,
         xMulti: 1,
@@ -22,64 +23,87 @@ function getRandomInt(min, max) {
 // @ENTITY_MAIN
 Entity.createNew = function(data, x, y) {
     var id = Object.keys(Game.entityMap).length;
-    var size = Game.settings.size;
-    var type = data.type || 'block';
-    switch (type) {
-        case 'player':
-            Game.ctx.fillStyle = "rgba(0, 0, 256, 1)";
-            break;
-        case 'npc':
-            Game.ctx.fillStyle = "rgba(0, 256, 0, 1)";
-            break;
-        case 'beast':
-            Game.ctx.fillStyle = "rgba(256, 0, 0, 1)";
-            break;
-        case 'block':
-        default:
-            Game.ctx.fillStyle = "rgba(128, 128, 128, 1)";
+
+    if (Game.map[x][y] === -1) {
+        data.coordinates = [x, y];
+        Game.entityMap[id] = data;
+        Game.map[x][y] = id;
     }
-    Game.ctx.fillRect(x * size, y * size, 1 * size, 1 * size);
-    Game.entityMap[id] = data;
-    Game.map[x][y] = id;
 }
 
 // @ENTITY_MOVEMENT
 Entity.MoveLeft = function(id) {
-    var Entity = Game.entityMap[id];
-    updatePoint(id)
+    // check colision with blocks
+    // check map bounding
+    var that = Game.entityMap[id];
+    var cord = that.coordinates;
+
+    Game.map[cord[0]][cord[1]] = -1;
+    var next = Game.map[cord[0] - 1][cord[1]];
+    console.log(next);
+
+    Game.map[cord[0] - 1][cord[1]] = id;
+    that.coordinates = [cord[0] - 1, cord[1]];
 }
 
 Entity.MoveUp = function(id) {
-    console.log(Game.entityMap[id]);
+    var that = Game.entityMap[id];
+    var cord = that.coordinates;
+
+    Game.map[cord[0]][cord[1]] = -1;
+    var next = Game.map[cord[0]][cord[1] - 1];
+    console.log(next);
+
+    Game.map[cord[0]][cord[1] - 1] = id;
+    that.coordinates = [cord[0], cord[1] - 1];
 }
 
 Entity.MoveRight = function(id) {
-    console.log(Game.entityMap[id]);
+    var that = Game.entityMap[id];
+    var cord = that.coordinates;
+
+    Game.map[cord[0]][cord[1]] = -1;
+    var next = Game.map[cord[0] + 1][cord[1]];
+    console.log(next);
+
+    Game.map[cord[0] + 1][cord[1]] = id;
+    that.coordinates = [cord[0] + 1, cord[1]];
 }
 
 Entity.MoveDown = function(id) {
-    console.log(Game.entityMap[id]);
+    var that = Game.entityMap[id];
+    var cord = that.coordinates;
+
+    Game.map[cord[0]][cord[1]] = -1;
+    var next = Game.map[cord[0]][cord[1] + 1];
+    console.log(next);
+
+    Game.map[cord[0]][cord[1] + 1] = id;
+    that.coordinates = [cord[0], cord[1] + 1];
 }
 
 // @GAME
 Game.init = function() {
     Game.canvas = document.getElementById("canvas");
     Game.ctx = canvas.getContext("2d");
+
     Game.initMap();
-    // choosePoint('player', '0');
+
+    Game.spawn('player');
+
     $(document).keydown(function(event) {
         switch (event.keyCode) {
             case 37:
-                move.Left(0);
+                Entity.MoveLeft(0);
                 break
             case 38:
-                move.Up(0);
+                Entity.MoveUp(0);
                 break;
             case 39:
-                move.Right(0);
+                Entity.MoveRight(0);
                 break;
             case 40:
-                move.Down(0);
+                Entity.MoveDown(0);
                 break;
         }
     });
@@ -98,14 +122,41 @@ Game.initMap = function() {
 
 Game.update = function() {
     stats.update();
-    var x = getRandomInt(0, 80 - 1),
-        y = getRandomInt(0, 45 - 1);
-    Entity.createNew({
-        type: 'block'
-    }, x, y);
+    if (Object.keys(Game.entityMap).length < 1000) {
+        var x = getRandomInt(0, 80 - 1),
+            y = getRandomInt(0, 45 - 1);
+        Entity.createNew({
+            type: 'block'
+        }, x, y);
+    }
 };
 
-Game.draw = function() {};
+Game.draw = function() {
+    var ids = Object.keys(Game.entityMap).length;
+    var size = Game.settings.size;
+    Game.canvas.width = Game.canvas.width;
+    for (var i = 0; i < ids; i++) {
+        var that = Game.entityMap[i];
+        var x = that.coordinates[0];
+        var y = that.coordinates[1];
+        var type = that.type;
+        switch (type) {
+            case 'player':
+                Game.ctx.fillStyle = "rgba(0, 0, 256, 1)";
+                break;
+            case 'npc':
+                Game.ctx.fillStyle = "rgba(0, 256, 0, 1)";
+                break;
+            case 'beast':
+                Game.ctx.fillStyle = "rgba(256, 0, 0, 1)";
+                break;
+            case 'block':
+            default:
+                Game.ctx.fillStyle = "rgba(128, 128, 128, 1)";
+        }
+        Game.ctx.fillRect(x * size, y * size, 1 * size, 1 * size);
+    }
+};
 
 Game.run = function() {
     if (Game.map.length) {
@@ -128,8 +179,13 @@ Game.start = function() {
     Game._interval = setInterval(Game.run, 1000 / Game.settings.tick);
 };
 
+Game.clearScreen = function() {
+    Game.canvas.width = Game.canvas.width;
+}
+
 Game.reset = function() {
     Game.canvas.width = Game.canvas.width;
+    Game.map = [];
 };
 
 Game.spawn = function(entity) {
