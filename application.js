@@ -122,6 +122,9 @@ Game.pause = function() {
 };
 
 Game.start = function() {
+    if (Game._interval) {
+        clearInterval(Game._interval);
+    }
     Game._interval = setInterval(Game.run, 1000 / Game.settings.tick);
 };
 
