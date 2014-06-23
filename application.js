@@ -35,51 +35,31 @@ Entity.createNew = function(data, x, y) {
 Entity.MoveLeft = function(id) {
     // check colision with blocks
     // check map bounding
-    var that = Game.entityMap[id];
-    var cord = that.coordinates;
-
-    Game.map[cord[0]][cord[1]] = -1;
-    var next = Game.map[cord[0] - 1][cord[1]];
-    console.log(next);
-
-    Game.map[cord[0] - 1][cord[1]] = id;
-    that.coordinates = [cord[0] - 1, cord[1]];
+    this.MoveEntity(-1,0,id);
 }
 
 Entity.MoveUp = function(id) {
-    var that = Game.entityMap[id];
-    var cord = that.coordinates;
-
-    Game.map[cord[0]][cord[1]] = -1;
-    var next = Game.map[cord[0]][cord[1] - 1];
-    console.log(next);
-
-    Game.map[cord[0]][cord[1] - 1] = id;
-    that.coordinates = [cord[0], cord[1] - 1];
+    this.MoveEntity(0,-1,id);
 }
 
 Entity.MoveRight = function(id) {
-    var that = Game.entityMap[id];
-    var cord = that.coordinates;
-
-    Game.map[cord[0]][cord[1]] = -1;
-    var next = Game.map[cord[0] + 1][cord[1]];
-    console.log(next);
-
-    Game.map[cord[0] + 1][cord[1]] = id;
-    that.coordinates = [cord[0] + 1, cord[1]];
+    this.MoveEntity(1,0,id);
 }
 
 Entity.MoveDown = function(id) {
+    this.MoveEntity(0,1,id);
+}
+
+Entity.MoveEntity = function(dirX,dirY,id){
     var that = Game.entityMap[id];
     var cord = that.coordinates;
 
     Game.map[cord[0]][cord[1]] = -1;
-    var next = Game.map[cord[0]][cord[1] + 1];
+    var next = Game.map[cord[0] + dirX][cord[1]+dirY];
     console.log(next);
 
-    Game.map[cord[0]][cord[1] + 1] = id;
-    that.coordinates = [cord[0], cord[1] + 1];
+    next = id;
+    that.coordinates = [cord[0] + dirX, cord[1]+dirY];
 }
 
 // @GAME
@@ -95,7 +75,7 @@ Game.init = function() {
         switch (event.keyCode) {
             case 37:
                 Entity.MoveLeft(0);
-                break
+                break;
             case 38:
                 Entity.MoveUp(0);
                 break;
