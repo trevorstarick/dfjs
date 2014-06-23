@@ -11,3 +11,6 @@ To-Do
 - Audio
 - File formatting
 - Node Webkit
+- Scrolling Map
+- NPC AI
+- Collision detection
