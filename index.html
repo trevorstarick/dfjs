@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+	<head>
+		<title></title>
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<script src="./jquery.min.js"></script>
+		<link rel="stylesheet" href="stylesheet.css">
+	</head>
+	<body>
+	<button onclick="Game.pause()">Pause</button>
+	<button onclick="Game.start()">Start</button>
+	<button onclick="Game.reset()">Reset</button>
+	<script src="./stats.min.js"></script>
+		<script>
+			var stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.right = '0px';
+			stats.domElement.style.top = '0px';
+			document.body.appendChild(stats.domElement);
+		</script>
+		<script src="./application.js"></script>
+	</body>
+</html>
