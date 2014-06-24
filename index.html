@@ -7,9 +7,21 @@
 		<link rel="stylesheet" href="stylesheet.css">
 	</head>
 	<body>
-	<button onclick="Game.pause()">Pause</button>
-	<button onclick="Game.start()">Start</button>
-	<button onclick="Game.reset()">Reset</button>
+	<div class="control">
+		Control:
+		<button onclick="Game.pause()">Pause</button>
+		<button onclick="Game.start()">Start</button>
+		<button onclick="Game.reset()">Reset</button>
+		<button onclick="Game.clearScreen()">Clear</button>
+	</div>
+	<div class="spawn">
+		Spawn:
+		<button onclick="Game.spawn('block')">Block</button>
+		<button onclick="Game.spawn('player')">Player</button>
+		<button onclick="Game.spawn('npc')">NPC</button>	
+		<button onclick="Game.spawn('beast')">Beast</button>	
+	</div>
+	<canvas width="640" height="360" id="canvas"></canvas>
 	<script src="./stats.min.js"></script>
 		<script>
 			var stats = new Stats();
