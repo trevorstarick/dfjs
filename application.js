@@ -141,29 +141,29 @@ Game.populate = function(type, limit) {
 };
 
 Game.draw = function() {
-  var ids = Object.keys(Game.entityMap).length;
-  var size = Settings.size;
-  Game.canvas.width = Game.canvas.width;
-  for (var i = 0; i < ids; i++) {
-    var that = Game.entityMap[i];
-    var x = that.coordinates[0];
-    var y = that.coordinates[1];
-    var type = that.type;
-    switch (type) {
-      case 'player':
-        Game.ctx.fillStyle = "rgba(255,255, 255, 1)";
-        break;
-      case 'npc':
-        Game.ctx.fillStyle = "rgba(0, 255, 0, 1)";
-        break;
-      case 'beast':
-        Game.ctx.fillStyle = "rgba(255, 0, 0, 1)";
-        break;
-      default:
-        Game.ctx.fillStyle = "rgba(128, 128, 128, 1)";
+    var ids = Object.keys(Game.entityMap).length;
+    var size = Settings.size;
+    Game.canvas.width = Game.canvas.width;
+    for (var i = 0; i < ids; i++) {
+        var that = Game.entityMap[i];
+        var x = that.coordinates[0];
+        var y = that.coordinates[1];
+        var type = that.type;
+        switch (type) {
+          case 'player':
+            Game.ctx.fillStyle = "rgba(255,255, 255, 1)";
+            break;
+          case 'npc':
+            Game.ctx.fillStyle = "rgba(0, 255, 0, 1)";
+            break;
+          case 'beast':
+            Game.ctx.fillStyle = "rgba(255, 0, 0, 1)";
+            break;
+          default:
+            Game.ctx.fillStyle = "rgba(128, 128, 128, 1)";
+        }
+        Game.ctx.fillRect(x * size, y * size, 1 * size, 1 * size);
     }
-    Game.ctx.fillRect(x * size, y * size, 1 * size, 1 * size);
-  }
 };
 
 Game.run = function() {
@@ -177,28 +177,28 @@ Game.run = function() {
 };
 
 Game.pause = function() {
-  clearInterval(Game._interval);
+    clearInterval(Game._interval);
 };
 
 Game.start = function() {
-  if (Game._interval) {
-    clearInterval(Game._interval);
-  }
-  Game._interval = setInterval(Game.run, 1000 / Settings.tick);
+    if (Game._interval) {
+        clearInterval(Game._interval);
+    }
+    Game._interval = setInterval(Game.run, 1000 / Settings.tick);
 };
 
 Game.clearScreen = function() {
-  Game.canvas.width = Game.canvas.width;
-  clearInterval(Game._interval);
-  Game.map = [];
-  Game.entityMap={};
+    Game.canvas.width = Game.canvas.width;
+    clearInterval(Game._interval);
+    Game.map = [];
+    Game.entityMap={};
 };
 
 Game.reset = function() {
-  Game.canvas.width = Game.canvas.width;
-  Game.map = [];
-  Game.entityMap={};
-  Game.start();
+    Game.canvas.width = Game.canvas.width;
+    Game.map = [];
+    Game.entityMap={};
+    Game.start();
 };
 
 Game.spawn = function(entity) {
