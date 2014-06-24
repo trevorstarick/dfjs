@@ -10,4 +10,10 @@ To-Do
 - Saving via cookies (base64 [Object Game])
 - Audio
 - File formatting
-- Node Webkit
+- Node-Webkit
+- Scrolling map
+- NPC AI
+- Collision detection
+- Controller support
+- Block range and frequency
+- Structure generation
