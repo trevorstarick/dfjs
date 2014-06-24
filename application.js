@@ -145,13 +145,13 @@ Game.draw = function() {
     var type = that.type;
     switch (type) {
       case 'player':
-        Game.ctx.fillStyle = "rgba(0, 0, 256, 1)";
+        Game.ctx.fillStyle = "rgba(255,255, 255, 1)";
         break;
       case 'npc':
-        Game.ctx.fillStyle = "rgba(0, 256, 0, 1)";
+        Game.ctx.fillStyle = "rgba(0, 255, 0, 1)";
         break;
       case 'beast':
-        Game.ctx.fillStyle = "rgba(256, 0, 0, 1)";
+        Game.ctx.fillStyle = "rgba(255, 0, 0, 1)";
         break;
       default:
         Game.ctx.fillStyle = "rgba(128, 128, 128, 1)";
