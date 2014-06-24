@@ -57,7 +57,7 @@ Entity.MoveDown = function(id) {
 };
 
 Entity.MoveEntity = function(dirX, dirY, id) {
-  if (Game._interval) {
+  if (Game._interval && !paused) {
       var that = Game.entityMap[id];
       var cord = that.coordinates;
   
@@ -177,10 +177,12 @@ Game.run = function() {
 };
 
 Game.pause = function() {
+    paused=true;
     clearInterval(Game._interval);
 };
 
 Game.start = function() {
+    paused=false;
     if (Game._interval) {
         clearInterval(Game._interval);
     }
