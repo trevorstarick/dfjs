@@ -21,6 +21,7 @@ Settings = {
   width: 640, // size in pixels of width
   height: 360 // size in pixels of height
 };
+var keysSet=false;
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -56,20 +57,22 @@ Entity.MoveDown = function(id) {
 };
 
 Entity.MoveEntity = function(dirX, dirY, id) {
-  var that = Game.entityMap[id];
-  var cord = that.coordinates;
-
-  Game.map[cord[0]][cord[1]] = -1;
-  var next = Game.map[cord[0] + dirX][cord[1] + dirY];
-  console.log(next, Game.entityMap[next]);
-  console.log(cord);
-  // Check collision
-  if (0 <= cord[0] + dirX && 0 <= cord[1] + dirY) {
-    if (next === -1 || Game.entityMap[next].type !== 'block') {
-      next = id;
-      that.coordinates = [cord[0] + dirX, cord[1] + dirY];
-    }
-  }
+  if (Game._interval) {
+      var that = Game.entityMap[id];
+      var cord = that.coordinates;
+  
+      Game.map[cord[0]][cord[1]] = -1;
+      var next = Game.map[cord[0] + dirX][cord[1] + dirY];
+      console.log(next, Game.entityMap[next]);
+      console.log(cord);
+      // Check collision
+      if (0 <= cord[0] + dirX && 0 <= cord[1] + dirY) {
+        if (next === -1 || Game.entityMap[next].type !== 'block') {
+          next = id;
+          that.coordinates = [cord[0] + dirX, cord[1] + dirY];
+        }
+      }
+   }
 };
 
 // @MAP
@@ -99,22 +102,25 @@ Game.init = function() {
 
   Game.spawn('player');
 
-  $(document).keydown(function(event) {
-    switch (event.keyCode) {
-      case 37:
-        Entity.MoveLeft(0);
-        break;
-      case 38:
-        Entity.MoveUp(0);
-        break;
-      case 39:
-        Entity.MoveRight(0);
-        break;
-      case 40:
-        Entity.MoveDown(0);
-        break;
+  if (!keysSet){
+      $(document).keydown(function(event) {
+        switch (event.keyCode) {
+          case 37:
+            Entity.MoveLeft(0);
+            break;
+          case 38:
+            Entity.MoveUp(0);
+            break;
+          case 39:
+            Entity.MoveRight(0);
+            break;
+          case 40:
+            Entity.MoveDown(0);
+            break;
+        }
+      });
+      keysSet=true;
     }
-  });
 };
 
 Game.update = function() {
@@ -183,11 +189,16 @@ Game.start = function() {
 
 Game.clearScreen = function() {
   Game.canvas.width = Game.canvas.width;
+  clearInterval(Game._interval);
+  Game.map = [];
+  Game.entityMap={};
 };
 
 Game.reset = function() {
   Game.canvas.width = Game.canvas.width;
   Game.map = [];
+  Game.entityMap={};
+  Game.start();
 };
 
 Game.spawn = function(entity) {
