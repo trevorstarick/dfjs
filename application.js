@@ -38,6 +38,10 @@ Entity.createNew = function(data, x, y) {
   }
 };
 
+Entity.AI = function(id, task) {
+
+};
+
 // @ENTITY_MOVEMENT
 Entity.MoveLeft = function(id) {
   this.MoveEntity(-1, 0, id);
@@ -145,7 +149,7 @@ Game.draw = function() {
     var type = that.type;
     switch (type) {
       case 'player':
-        Game.ctx.fillStyle = "rgba(255,255, 255, 1)";
+        Game.ctx.fillStyle = "rgba(255, 255, 255, 1)";
         break;
       case 'npc':
         Game.ctx.fillStyle = "rgba(0, 255, 0, 1)";
