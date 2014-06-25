@@ -101,7 +101,7 @@ Map.setViewport = function(x, y) {
 Game.init = function() {
   Game.canvas = document.getElementById("canvas");
   Game.canvas.width = window.screen.width;
-  Game.canvas.height = (window.screen.width / 8) * 45;
+  Game.canvas.height = (window.screen.width / 80) * 45;
   Game.ctx = canvas.getContext("2d");
 
   Map.init();
