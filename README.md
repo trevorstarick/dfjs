@@ -15,7 +15,8 @@ To-Do
 - Scrolling map
 - NPC AI
 - Collision detection
-- Controller support
+- [Controller support](http://www.html5rocks.com/en/tutorials/doodles/gamepad/)
 - Block range and frequency
 - Structure generation
-- Browserify modularization
+- [Browserify](http://browserify.org/) modularization
+- [A* pathfinding](https://github.com/qiao/PathFinding.js)
