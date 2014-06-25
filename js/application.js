@@ -1,36 +1,29 @@
 var stats = window.stats || {};
 var $ = window.jQuery || {};
 
-var App = {};
-
 var Game = {},
   Entity = {},
   Config = {},
   Map = {},
-  Settings = {};
+  Settings = {},
+  AI = {},
+  Physics = {};
 
 Game = {
   map: [],
   entityMap: {},
-  version: 1,
+  version: 1
 };
 
 Settings = {
-  tick: 100, // max ticks per second
+  tick: 200, // max ticks per second
   size: Math.ceil(window.innerWidth / 80), // size in pixels of block
   maxSize: 8,
   width: 80, // size in pixels of width
   height: 45 // size in pixels of height
 };
 
-Settings.updateSize = function() {
-  Settings.size = Math.ceil(window.innerWidth / 80);
-  Game.canvas.width = Settings.size * Settings.width;
-  Game.canvas.height = Settings.size * Settings.height;
-  console.log('Size updated...', Settings.size);
-};
-
-var keysSet = false;
+var keysSet = false; // 
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -41,24 +34,34 @@ function say(msg, color) {
   console.log("%c" + msg, "color:" + color + ";font-weight:bold;");
 }
 
+Settings.updateSize = function() {
+  Settings.size = Math.ceil(window.innerWidth / 80);
+  Game.canvas.width = Settings.size * Settings.width;
+  Game.canvas.height = Settings.size * Settings.height;
+  console.log('Size updated...', Settings.size);
+};
+
 console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
 
 // @ENTITY_MAIN
-Entity.createNew = function(data, x, y) {
+Entity.createNew = function(data, pos, cb) {
   var id = Object.keys(Game.entityMap).length;
+  var x = pos[0],
+    y = pos[1];
 
   if (Game.map[x][y] === -1) {
     data.coordinates = [x, y];
     Game.entityMap[id] = data;
     Game.map[x][y] = id;
+    console.log('g');
+    return cb(true);
+  } else {
+    console.log('b');
+    return cb(false);
   }
 };
 
-Entity.AI = function(id, task) {
-
-};
-
-// @ENTITY_MOVEMENT
+// Entity movement
 Entity.MoveLeft = function(id) {
   this.MoveEntity(-1, 0, id);
 };
@@ -103,12 +106,7 @@ Map.init = function() {
     }
     Game.map.push(row);
   }
-  this.setViewport(Settings.width / 2, Settings.height / 2);
   console.log('Map initialized...');
-};
-
-Map.setViewport = function(x, y) {
-
 };
 
 // @GAME
@@ -125,6 +123,11 @@ Game.init = function() {
   Map.init();
 
   Game.spawn('player');
+
+  Game.populate('liquid', {}, 10);
+  Game.populate('beast', {}, 7);
+  Game.populate('npc', {}, 15);
+  Game.populate('block', {}, 100);
 
   if (!keysSet) {
     $(document).keydown(function(event) {
@@ -147,22 +150,44 @@ Game.init = function() {
   }
 };
 
-Game.update = function() {
-  stats.update();
-  // window.onresize = Settings.updateSize; // Comment out to disable auto resize
-  Game.populate('beast', 3);
-  Game.populate('npc', 5);
-  Game.populate('block', 10);
-};
+// Initial populating/generation
 
-Game.populate = function(type, limit) {
-  if (Object.keys(Game.entityMap).length < limit) {
+Game.populate = function(type, data, limit) {
+  var spawned = 0;
+  while (spawned < limit) {
     var x = getRandomInt(0, 80 - 1),
       y = getRandomInt(0, 45 - 1);
     Entity.createNew({
-      type: type
-    }, x, y);
+      type: type,
+      data: data
+    }, [x, y], function(success) {
+      if (success) spawned += 1;
+    });
   }
+};
+
+Game.spawn = function(type, data) {
+  data = data || {};
+  var spawned = 0;
+  while (spawned < 1) {
+    var x = getRandomInt(0, 80 - 1),
+      y = getRandomInt(0, 45 - 1);
+    Entity.createNew({
+      type: type,
+      data: data
+    }, [x, y], function(success) {
+      if (success) spawned += 1;
+    });
+  }
+};
+
+// Per tick
+
+Game.update = function() {
+  stats.update();
+  // AI.update();
+  // Physics.update();
+  // window.onresize = Settings.updateSize; // Comment out to disable auto resize
 };
 
 Game.draw = function() {
@@ -184,12 +209,17 @@ Game.draw = function() {
       case 'beast':
         Game.ctx.fillStyle = "rgba(255, 0, 0, 1)";
         break;
+      case 'liquid':
+        Game.ctx.fillStyle = "rgba(0, 0, 255, 1)";
+        break;
       default:
         Game.ctx.fillStyle = "rgba(128, 128, 128, 1)";
     }
     Game.ctx.fillRect(x * size, y * size, 1 * size, 1 * size);
   }
 };
+
+// Controls
 
 Game.run = function() {
   if (Game.map.length) {
@@ -227,15 +257,6 @@ Game.reset = function() {
   Game.entityMap = {};
   Game.start();
 };
-
-Game.spawn = function(entity) {
-  var x = getRandomInt(0, 80 - 1),
-    y = getRandomInt(0, 45 - 1);
-  Entity.createNew({
-    type: entity
-  }, x, y);
-};
-
 
 // Start Game
 Game.start();
