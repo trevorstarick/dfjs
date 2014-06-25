@@ -17,7 +17,7 @@ Game = {
 
 Settings = {
   tick: 100, // max ticks per second
-  size: window.screen.width / 80, // size in pixels of block
+  size: window.innerWidth / 80, // size in pixels of block
   width: 80, // size in pixels of width
   height: 45 // size in pixels of height
 };
@@ -100,8 +100,8 @@ Map.setViewport = function(x, y) {
 // @GAME
 Game.init = function() {
   Game.canvas = document.getElementById("canvas");
-  Game.canvas.width = window.screen.width;
-  Game.canvas.height = (window.screen.width / 80) * 45;
+  Game.canvas.width = window.innerWidth;
+  Game.canvas.height = (window.innerWidth / 80) * 45;
   Game.ctx = canvas.getContext("2d");
 
   Map.init();
