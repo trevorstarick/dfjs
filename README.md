@@ -18,3 +18,4 @@ To-Do
 - Controller support
 - Block range and frequency
 - Structure generation
+- Browserify modularization
