@@ -7,6 +7,7 @@ To-Do
 -----
 
 - Input hooks
+- Console based interaction
 - Saving via cookies (base64 [Object Game])
 - Audio
 - File formatting

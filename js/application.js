@@ -17,16 +17,31 @@ Game = {
 
 Settings = {
   tick: 100, // max ticks per second
-  size: window.innerWidth / 80, // size in pixels of block
+  size: Math.ceil(window.innerWidth / 80), // size in pixels of block
+  maxSize: 8,
   width: 80, // size in pixels of width
   height: 45 // size in pixels of height
 };
+
+Settings.updateSize = function() {
+  Settings.size = Math.ceil(window.innerWidth / 80);
+  Game.canvas.width = Settings.size * Settings.width;
+  Game.canvas.height = Settings.size * Settings.height;
+  console.log('Size updated...', Settings.size);
+};
+
 var keysSet = false;
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function say(msg, color) {
+  color = color || 'black';
+  console.log("%c" + msg, "color:" + color + ";font-weight:bold;");
+}
+
+console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
 
 // @ENTITY_MAIN
 Entity.createNew = function(data, x, y) {
@@ -81,7 +96,6 @@ Entity.MoveEntity = function(dirX, dirY, id) {
 
 // @MAP
 Map.init = function() {
-  var size = Settings.size;
   for (var x = 0; x <= 80 - 1; x++) {
     var row = [];
     for (var y = 0; y <= 45 - 1; y++) {
@@ -99,9 +113,13 @@ Map.setViewport = function(x, y) {
 
 // @GAME
 Game.init = function() {
+  if (Settings.size > Settings.maxSize) {
+    Settings.size = Settings.maxSize;
+  }
+
   Game.canvas = document.getElementById("canvas");
-  Game.canvas.width = window.innerWidth;
-  Game.canvas.height = (window.innerWidth / 80) * 45;
+  Game.canvas.width = Settings.size * Settings.width;
+  Game.canvas.height = Settings.size * Settings.height;
   Game.ctx = canvas.getContext("2d");
 
   Map.init();
@@ -131,6 +149,7 @@ Game.init = function() {
 
 Game.update = function() {
   stats.update();
+  // window.onresize = Settings.updateSize; // Comment out to disable auto resize
   Game.populate('beast', 3);
   Game.populate('npc', 5);
   Game.populate('block', 10);
