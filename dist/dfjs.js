@@ -1,19 +1,9 @@
-var stats = window.stats || {};
-var $ = window.jQuery || {};
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
 
-var Game = {},
-  Entity = {},
-  Config = {},
-  Map = {},
-  Settings = {},
-  AI = {},
-  Physics = {};
+window.Settings = {};
 
-Game = {
-  map: [],
-  entityMap: {},
-  version: 1
-};
+var Game = require('./core/game.js');
 
 Settings = {
   tick: 200, // max ticks per second
@@ -23,17 +13,6 @@ Settings = {
   height: 45 // size in pixels of height
 };
 
-var keysSet = false; // 
-
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function say(msg, color) {
-  color = color || 'black';
-  console.log("%c" + msg, "color:" + color + ";font-weight:bold;");
-}
-
 Settings.updateSize = function() {
   Settings.size = Math.ceil(window.innerWidth / 80);
   Game.canvas.width = Settings.size * Settings.width;
@@ -41,7 +20,16 @@ Settings.updateSize = function() {
   console.log('Size updated...', Settings.size);
 };
 
-console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
+console.log('%c%c background: #222; color: #bada55', 'background: #222; color: #bada55');
+
+// Start Game
+Game.start();
+},{"./core/game.js":4}],2:[function(require,module,exports){
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
+var Entity = {};
 
 // @ENTITY_MAIN
 Entity.createNew = function(data, pos, cb) {
@@ -53,10 +41,8 @@ Entity.createNew = function(data, pos, cb) {
     data.coordinates = [x, y];
     Game.entityMap[id] = data;
     Game.map[x][y] = id;
-    console.log('g');
     return cb(true);
   } else {
-    console.log('b');
     return cb(false);
   }
 };
@@ -79,7 +65,7 @@ Entity.MoveDown = function(id) {
 };
 
 Entity.MoveEntity = function(dirX, dirY, id) {
-  if (Game._interval && !paused) {
+  if (Game._interval && !Game.paused) {
     var that = Game.entityMap[id];
     var cord = that.coordinates;
 
@@ -97,17 +83,26 @@ Entity.MoveEntity = function(dirX, dirY, id) {
   }
 };
 
-// @MAP
-Map.init = function() {
-  for (var x = 0; x <= 80 - 1; x++) {
-    var row = [];
-    for (var y = 0; y <= 45 - 1; y++) {
-      row.push(-1);
-    }
-    Game.map.push(row);
-  }
-  console.log('Map initialized...');
+module.exports = Entity;
+},{}],4:[function(require,module,exports){
+window.Game = {};
+
+var Map = require('./map.js'),
+  Entity = require('./entities.js'),
+  AI = require('./ai.js'),
+  Physics = require('./physics.js');
+
+Game = {
+  map: [],
+  entityMap: {},
+  version: 1
 };
+
+var keysSet = false;
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 // @GAME
 Game.init = function() {
@@ -154,37 +149,41 @@ Game.init = function() {
 
 Game.populate = function(type, data, limit) {
   var spawned = 0;
+
+  function increase(success) {
+    if (success) spawned += 1;
+  }
   while (spawned < limit) {
     var x = getRandomInt(0, 80 - 1),
       y = getRandomInt(0, 45 - 1);
     Entity.createNew({
       type: type,
       data: data
-    }, [x, y], function(success) {
-      if (success) spawned += 1;
-    });
+    }, [x, y], increase);
   }
 };
 
 Game.spawn = function(type, data) {
   data = data || {};
   var spawned = 0;
+
+  function increase(success) {
+    if (success) spawned += 1;
+  }
   while (spawned < 1) {
     var x = getRandomInt(0, 80 - 1),
       y = getRandomInt(0, 45 - 1);
     Entity.createNew({
       type: type,
       data: data
-    }, [x, y], function(success) {
-      if (success) spawned += 1;
-    });
+    }, [x, y], increase);
   }
 };
 
 // Per tick
 
 Game.update = function() {
-  stats.update();
+  window.stats.update();
   // AI.update();
   // Physics.update();
   // window.onresize = Settings.updateSize; // Comment out to disable auto resize
@@ -258,5 +257,31 @@ Game.reset = function() {
   Game.start();
 };
 
-// Start Game
-Game.start();
+module.exports = Game;
+},{"./ai.js":2,"./entities.js":3,"./map.js":5,"./physics.js":6}],5:[function(require,module,exports){
+var Map = function() {
+  this.initialized = false;
+};
+
+Map.prototype = {
+  init: function() {
+    for (var x = 0; x <= 80 - 1; x++) {
+      var row = [];
+      for (var y = 0; y <= 45 - 1; y++) {
+        row.push(-1);
+      }
+      Game.map.push(row);
+    }
+    this.initialized = true;
+    console.log('Map initialized...');
+  },
+  foobar: function(argument) {
+    var result = argument.substring(0, 16);
+    return result;
+  }
+};
+
+module.exports = new Map();
+},{}],6:[function(require,module,exports){
+module.exports=require(2)
+},{}]},{},[1]);
