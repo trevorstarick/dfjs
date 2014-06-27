@@ -9,7 +9,7 @@ To-Do
 - [x] Input hooks
 - [x] Collision detection
 - [x] Seed based generation
-- [ ] Saving via cookies (base64 [Object Game])
+- [ ] [Saving via cookies](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage) (base64 [Object Game])
 - [ ] Audio
 - [ ] Scrolling map
 - [ ] NPC AI
