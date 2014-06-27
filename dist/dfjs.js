@@ -165,8 +165,10 @@ Game = {
 
 var keysSet = false; // Still not sure what this is for
 // @GAME
+
 Game.init = function() {
-  console.log(this.seed);
+  // Game = this.readCookie('save');
+  this.loops = 0;
   seedrandom(this.seed, {
     global: true
   });
@@ -212,6 +214,10 @@ Game.init = function() {
 
 Game.update = function() {
   window.stats.update();
+  if (this.loops % 1000) {
+    // Save game
+  }
+  this.loops += 1;
   // AI.update();
   // Physics.update();
   // window.onresize = Settings.updateSize; // Comment out to disable auto resize
