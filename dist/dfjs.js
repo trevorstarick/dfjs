@@ -163,6 +163,8 @@ Game = {
   seed: QueryString.seed || Math.ceil(Math.random() * Date.now()).toString(36).substring(0, 8)
 };
 
+// Game.seed = 'trevor';
+
 var keysSet = false; // Still not sure what this is for
 // @GAME
 
@@ -180,6 +182,19 @@ Game.init = function() {
   Game.canvas.width = Settings.size * Settings.width;
   Game.canvas.height = Settings.size * Settings.height;
   Game.ctx = Game.canvas.getContext("2d");
+
+  Game.canvas.addEventListener("mousedown", getPosition, false);
+  // Game.canvas.addEventListener("mouseup", getPosition, false);
+
+  function getPosition(e) {
+    var x = e.x,
+      y = e.y;
+
+    x -= Game.canvas.offsetLeft;
+    y -= Game.canvas.offsetTop;
+
+    console.log(e.type, [x, y], [Math.floor(x / Settings.size), Math.floor(y / Settings.size)]);
+  }
 
   Map.init();
 
@@ -308,9 +323,23 @@ Map.prototype = {
     this.initialized = true;
     console.log('Map initialized...');
   },
-  foobar: function(argument) {
-    var result = argument.substring(0, 16);
-    return result;
+  span: function(direction, length) {
+    var map = Game.map;
+    switch (direction) {
+      case 'up':
+        direction = [0, -length];
+        break;
+      case 'down':
+        direction = [0, length];
+        break;
+      case 'left':
+        direction = [-length, 0];
+        break;
+      case 'right':
+        direction = [length, 0];
+        break;
+    }
+    console.log(direction);
   }
 };
 
