@@ -68,9 +68,23 @@ Entity.createNew = function(data, pos, cb) {
     data.coordinates = [x, y];
     Game.entityMap[id] = data;
     Game.map[x][y] = id;
-    return cb(true);
+    return cb(id);
   } else {
     return cb(false);
+  }
+};
+
+Entity.remove = function(pos) {
+  var x = pos[0],
+    y = pos[1];
+
+  if (Game.map[x][y] !== -1) {
+    var id = Game.map[x][y];
+    console.log('removed', id, [x, y]);
+    Game.entityMap[id] = {
+      deleted: true
+    };
+    Game.map[x][y] = -1;
   }
 };
 
@@ -160,7 +174,8 @@ Game = {
   entityMap: {},
   version: 1,
   state: 'paused',
-  seed: QueryString.seed || Math.ceil(Math.random() * Date.now()).toString(36).substring(0, 8)
+  seed: QueryString.seed || Math.ceil(Math.random() * Date.now()).toString(36).substring(0, 8),
+  selected: 'block'
 };
 
 // Game.seed = 'trevor';
@@ -183,8 +198,31 @@ Game.init = function() {
   Game.canvas.height = Settings.size * Settings.height;
   Game.ctx = Game.canvas.getContext("2d");
 
-  Game.canvas.addEventListener("mousedown", getPosition, false);
+  Game.canvas.addEventListener("mousedown", function(e) {
+    e.preventDefault();
+    var pos = getPosition(e);
+    Entity.createNew({
+      "type": "block",
+      "data": {},
+      "coordinates": pos
+    }, pos, function(status) {
+      if (status) {
+        console.log("created", status, pos);
+      } else {
+        console.log("unable to create");
+      }
+    });
+  }, false);
   // Game.canvas.addEventListener("mouseup", getPosition, false);
+  // Game.canvas.addEventListener("mousemove", getPosition, false);
+
+  Game.canvas.oncontextmenu = function(e) {
+    e.preventDefault();
+    var pos = getPosition(e);
+    var x = pos[0];
+    var y = pos[1];
+    Entity.remove([x, y]);
+  };
 
   function getPosition(e) {
     var x = e.x,
@@ -193,7 +231,9 @@ Game.init = function() {
     x -= Game.canvas.offsetLeft;
     y -= Game.canvas.offsetTop;
 
-    console.log(e.type, [x, y], [Math.floor(x / Settings.size), Math.floor(y / Settings.size)]);
+    var pos = [Math.floor(x / Settings.size), Math.floor(y / Settings.size)];
+    console.log(e.type, [x, y], pos);
+    return pos;
   }
 
   Map.init();
@@ -244,39 +284,46 @@ Game.draw = function() {
   Game.canvas.width = Game.canvas.width;
   for (var i = 0; i < ids; i++) {
     var that = Game.entityMap[i];
-    var x = that.coordinates[0];
-    var y = that.coordinates[1];
-    var type = that.type;
-    switch (type) {
-      case 'player':
-        Game.ctx.fillStyle = "rgba(255,255, 255, 1)";
-        break;
-      case 'npc':
-        Game.ctx.fillStyle = "rgba(0, 255, 0, 1)";
-        break;
-      case 'beast':
-        Game.ctx.fillStyle = "rgba(255, 0, 0, 1)";
-        break;
-      case 'liquid':
-        Game.ctx.fillStyle = "rgba(0, 0, 255, 1)";
-        break;
-      default:
-        Game.ctx.fillStyle = "rgba(128, 128, 128, 1)";
+    if (!that.deleted) {
+      var x = that.coordinates[0];
+      var y = that.coordinates[1];
+      var type = that.type;
+      switch (type) {
+        case 'player':
+          Game.ctx.fillStyle = "rgba(255,255, 255, 1)";
+          break;
+        case 'npc':
+          Game.ctx.fillStyle = "rgba(0, 255, 0, 1)";
+          break;
+        case 'beast':
+          Game.ctx.fillStyle = "rgba(255, 0, 0, 1)";
+          break;
+        case 'liquid':
+          Game.ctx.fillStyle = "rgba(0, 0, 255, 1)";
+          break;
+        default:
+          Game.ctx.fillStyle = "rgba(128, 128, 128, 1)";
+      }
+      Game.ctx.fillRect(x * size, y * size, 1 * size, 1 * size);
     }
-    Game.ctx.fillRect(x * size, y * size, 1 * size, 1 * size);
   }
 };
 
 Game.pause = function() {
   Game.state = 'paused';
+  console.log(Game.state);
   clearInterval(Game._interval);
+};
+
+Game.resume = function() {
+  Game.state = 'running';
+  console.log(Game.state);
+  Game._interval = setInterval(Game.run, 1000 / Settings.tick);
 };
 
 Game.start = function() {
   Game.state = 'running';
-  if (Game._interval) {
-    clearInterval(Game._interval);
-  }
+  console.log(Game.state);
   Game._interval = setInterval(Game.run, 1000 / Settings.tick);
 };
 
