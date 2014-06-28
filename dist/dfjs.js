@@ -202,7 +202,7 @@ Game.init = function() {
     e.preventDefault();
     var pos = getPosition(e);
     Entity.createNew({
-      "type": "block",
+      "type": Game.selected,
       "data": {},
       "coordinates": pos
     }, pos, function(status) {
