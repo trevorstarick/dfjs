@@ -29,8 +29,8 @@ module.exports = function(grunt) {
         keepalive: true
       },
       default: {
-        src: './lib/application.js',
-        dest: './dist/dfjs.js'
+        src: './build/lib/application.js',
+        dest: './build/dist/dfjs.js'
       }
     },
 
@@ -41,8 +41,8 @@ module.exports = function(grunt) {
         keepalive: true
       },
       default: {
-        src: './lib/application.js',
-        dest: './dist/dfjs.js'
+        src: './build/lib/application.js',
+        dest: './build/dist/dfjs.js'
       }
     },
 
@@ -50,9 +50,20 @@ module.exports = function(grunt) {
     uglify: {
       dist: {
         files: {
-          'dist/dfjs.min.js': 'dist/dfjs.js'
+          './public/dist/dfjs.min.js': './public/dist/dfjs.js'
         }
       }
+    },
+
+    nodewebkit: {
+      options: {
+        build_dir: './build', // Where the build version of my node-webkit app is saved
+        mac: true, // We want to build it for mac
+        win: true, // We want to build it for win
+        linux32: false, // We don't need linux32
+        linux64: false // We don't need linux64
+      },
+      src: ['./public/**/*'] // Your node-webkit app
     }
 
   });
@@ -63,6 +74,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-watchify');
+  grunt.loadNpmTasks('grunt-node-webkit-builder');
 
   //Define 'grunt debug' task
   grunt.registerTask('debug', [
@@ -72,7 +84,8 @@ module.exports = function(grunt) {
   //Define 'grunt build' task
   grunt.registerTask('build', [
     'browserify',
-    'uglify'
+    'uglify',
+    'nodewebkit'
   ]);
 
   //Define 'grunt dev' task

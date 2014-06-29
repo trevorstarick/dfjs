@@ -17,7 +17,7 @@ To-Do
 - [ ] Structure generation
 - [x] [Browserify](http://browserify.org/) modularization
 - [ ] [A* pathfinding](https://github.com/qiao/PathFinding.js)
-- [ ] Node-Webkit
+- [x] Node-Webkit
 - [ ] File formatting
 - [ ] Console based interaction
 - [ ] [Controller support](http://www.html5rocks.com/en/tutorials/doodles/gamepad/)
@@ -77,7 +77,7 @@ Install NPM if you haven't already done so. NPM is a package manager that ships 
 
 Run `npm install` once to install all the dependencies needed by this project. Next there are a few options:
 
-Run `grunt build` to perform a new build to the `dist` folder. This way Browserify will generate a bundle from every required script in the `lib` folder, this will also generate a minified file of the bundle. This is preferred when you are done developing and want to push your new changes, as this version doesn't include the debug map.
+Run `grunt build` to perform a new bundle build to the `dist` folder and a new node-webkit build to the `build` folder. This way Browserify will generate a bundle from every required script in the `lib` folder, this will also generate a minified file of the bundle. This is preferred when you are done developing and want to push your new changes, as this version doesn't include the debug map.
 
 Run `grunt dev` to watch every module needed in the project for changes. Watchify will take care of rebuilding the bundle so the only thing you have to do is refresh your browser. No need to run `grunt build` everytime you make a change. This version includes a debug map so you are able to debug single files while the .js file included is still the bundle file.
 
