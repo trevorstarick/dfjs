@@ -24,13 +24,14 @@ module.exports = function(grunt) {
 
     //Configure Browserify build, no debug map and don't keep alive
     browserify: {
-      options: {
-        debug: true,
-        keepalive: true
-      },
       default: {
-        src: './build/lib/application.js',
-        dest: './build/dist/dfjs.js'
+        options: {
+          debug: false,
+          keepalive: false
+        },
+        files: {
+          'public/dist/dfjs.js': ['lib/application.js']
+        }
       }
     },
 
@@ -75,6 +76,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-watchify');
   grunt.loadNpmTasks('grunt-node-webkit-builder');
+
+  grunt.registerTask('foo', [
+    'browserify'
+  ]);
 
   //Define 'grunt debug' task
   grunt.registerTask('debug', [

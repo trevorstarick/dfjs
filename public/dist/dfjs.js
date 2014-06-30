@@ -166,15 +166,14 @@ var Map = require('./map.js'),
   Input = require('../input/keypress.js'),
   seedrandom = require('./seedrandom.js');
 
-
 Game = {
   map: [],
   entityMap: {},
-  version: 1,
+  version: 2,
   state: 'paused',
   seed: Math.ceil(Math.random() * Date.now()).toString(36).substring(0, 8),
   selected: 'block',
-  input: Input
+  input: new window.keypress.Listener()
 };
 
 // Game.seed = 'trevor';
@@ -182,6 +181,22 @@ Game = {
 Game.init = function() {
   // Game = this.readCookie('save');
   this.loops = 0;
+
+  var listener = Game.input;
+
+  listener.simple_combo("shift d", function() {
+    gui.Window.get().showDevTools();
+  });
+  listener.simple_combo("shift s", function() {
+    var state = document.getElementById('stats').style.display;
+    console.log(state);
+    if (!state || state === "none") {
+      document.getElementById('stats').style.display = "block";
+    } else {
+      document.getElementById('stats').style.display = "none";
+    }
+  });
+
   seedrandom(this.seed, {
     global: true
   });
@@ -1834,4 +1849,4 @@ Combo options available and their defaults:
 
 }).call(this);
 
-},{}]},{},[1])
+},{}]},{},[1]);

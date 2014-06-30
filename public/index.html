@@ -8,6 +8,14 @@
 		<link rel="stylesheet" href="css/stylesheet.css">
 	</head>
 	<body>
+	<div id="top-titlebar" class="top-titlebar" style="background-color: rgb(58, 61, 61);">
+		<div class="top-titlebar-icon">
+			<img id="top-titlebaricon" src="./images/top-titlebar.png">
+		</div>
+		<div class="top-titlebar-text">Shift+S for Stats. Shift+D for Debug</div>
+		<div class="top-titlebar-close-button" onclick="window.close()"></div>
+		<div class="top-titlebar-divider"></div>
+	</div>
 	<canvas width="80" height="45" id="game"></canvas>
 	<canvas id="menu"></canvas>
 	<div class="details">
@@ -16,9 +24,10 @@
 	</div>
 	<script src="./js/stats.min.js"></script>
 		<script>
+			var gui = require('nw.gui');
 			var stats = new Stats();
 			stats.domElement.style.position = 'absolute';
-			stats.domElement.style.right = '0px';
+			stats.domElement.style.left = '0px';
 			stats.domElement.style.top = '0px';
 			document.body.appendChild(stats.domElement);
 		</script>
