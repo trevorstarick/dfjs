@@ -9,7 +9,7 @@
     "title": "DFjs",
     "icon": "link.png",
     "toolbar": true,
-    "frame": false,
+    "frame": true,
     "width": 656,
     "height": 376,
     "position": "mouse",
